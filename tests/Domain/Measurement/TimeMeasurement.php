@@ -30,6 +30,6 @@ class TimeMeasurement extends Measurement
      */
     protected function toMilliseconds($time)
     {
-        return (int) round($time * 1000);
+        return (int) round($time / 1000);
     }
 }
