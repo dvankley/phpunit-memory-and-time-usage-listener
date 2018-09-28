@@ -14,9 +14,6 @@ class TimeAndMemoryTestListener implements TestListener
 {
     use DefaultListener;
 
-    /** @var int  */
-    protected $testSuitesRunning = 0;
-
     /** @var TestMeasurement[] */
     protected $testMeasurementCollection;
 
@@ -72,39 +69,17 @@ class TimeAndMemoryTestListener implements TestListener
         $this->memoryUsage = memory_get_usage() - ($this->memoryUsage);
         $this->memoryPeakIncrease = memory_get_peak_usage() - ($this->memoryPeakIncrease);
 
+        echo PHP_EOL . ">> Peak memory: " . (int)(memory_get_peak_usage() / 1000) . " kB" . PHP_EOL;
+
         if ($this->haveToSaveTestMeasurement($time)) {
-            $this->testMeasurementCollection[] = new TestMeasurement(
+            $testMeasurement = new TestMeasurement(
                 $test->getName(),
                 get_class($test),
                 $this->executionTime,
                 (new MemoryMeasurement($this->memoryUsage)),
                 (new MemoryMeasurement($this->memoryPeakIncrease))
             );
-        }
-    }
-
-    /**
-     * @param TestSuite $suite
-     */
-    public function startTestSuite(TestSuite $suite)
-    {
-        $this->testSuitesRunning++;
-    }
-
-    /**
-     * @param TestSuite $suite
-     */
-    public function endTestSuite(TestSuite $suite)
-    {
-        $this->testSuitesRunning--;
-
-        if ((0 === $this->testSuitesRunning) && (0 < count($this->testMeasurementCollection))) {
-            echo PHP_EOL . "Time & Memory measurement results: " . PHP_EOL;
-            $i = 1;
-            foreach ($this->testMeasurementCollection as $testMeasurement) {
-                echo PHP_EOL . $i . " - " . $testMeasurement->measuredInformationMessage();
-                $i++;
-            }
+            echo PHP_EOL . " - " . $testMeasurement->measuredInformationMessage() . PHP_EOL;
         }
     }
 
