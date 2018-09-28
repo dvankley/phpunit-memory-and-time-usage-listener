@@ -6,6 +6,7 @@ use PhpunitMemoryAndTimeUsageListener\Domain\Measurement\MemoryMeasurement;
 use PhpunitMemoryAndTimeUsageListener\Domain\Measurement\TestMeasurement;
 use PhpunitMemoryAndTimeUsageListener\Domain\Measurement\TimeMeasurement;
 use \PHPUnit\Framework\Test as Test;
+use \PHPUnit\Framework\TestSuite as TestSuite;
 use \PHPUnit\Framework\Warning as Warning;
 use \PHPUnit\Framework\TestListener as TestListener;
 use \PHPUnit\Framework\TestListenerDefaultImplementation as DefaultListener;
