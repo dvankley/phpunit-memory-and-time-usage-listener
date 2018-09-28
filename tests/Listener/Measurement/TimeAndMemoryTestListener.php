@@ -5,9 +5,15 @@ namespace PhpunitMemoryAndTimeUsageListener\Listener\Measurement;
 use PhpunitMemoryAndTimeUsageListener\Domain\Measurement\MemoryMeasurement;
 use PhpunitMemoryAndTimeUsageListener\Domain\Measurement\TestMeasurement;
 use PhpunitMemoryAndTimeUsageListener\Domain\Measurement\TimeMeasurement;
+use \PHPUnit\Framework\Test as Test;
+use \PHPUnit\Framework\Warning as Warning;
+use \PHPUnit\Framework\TestListener as TestListener;
+use \PHPUnit\Framework\TestListenerDefaultImplementation as DefaultListener;
 
-class TimeAndMemoryTestListener implements \PHPUnit_Framework_TestListener
+class TimeAndMemoryTestListener implements TestListener
 {
+    use DefaultListener;
+
     /** @var int  */
     protected $testSuitesRunning = 0;
 
@@ -48,19 +54,19 @@ class TimeAndMemoryTestListener implements \PHPUnit_Framework_TestListener
     }
 
     /**
-     * @param \PHPUnit_Framework_Test $test
+     * @param Test $test
      */
-    public function startTest(\PHPUnit_Framework_Test $test)
+    public function startTest(Test $test)
     {
         $this->memoryUsage = memory_get_usage();
         $this->memoryPeakIncrease = memory_get_peak_usage();
     }
 
     /**
-     * @param \PHPUnit_Framework_Test $test
+     * @param Test $test
      * @param $time
      */
-    public function endTest(\PHPUnit_Framework_Test $test, $time)
+    public function endTest(Test $test, $time)
     {
         $this->executionTime = new TimeMeasurement($time);
         $this->memoryUsage = memory_get_usage() - ($this->memoryUsage);
@@ -78,62 +84,17 @@ class TimeAndMemoryTestListener implements \PHPUnit_Framework_TestListener
     }
 
     /**
-     * @param \PHPUnit_Framework_Test $test
-     * @param \Exception              $exception
-     * @param float                   $time
+     * @param TestSuite $suite
      */
-    public function addError(\PHPUnit_Framework_Test $test, \Exception $exception, $time)
-    {
-    }
-
-    /**
-     * @param \PHPUnit_Framework_Test                 $test
-     * @param \PHPUnit_Framework_AssertionFailedError $exception
-     * @param float                                   $time
-     */
-    public function addFailure(\PHPUnit_Framework_Test $test, \PHPUnit_Framework_AssertionFailedError $exception, $time)
-    {
-    }
-
-    /**
-     * @param \PHPUnit_Framework_Test $test
-     * @param \Exception              $exception
-     * @param float                   $time
-     */
-    public function addIncompleteTest(\PHPUnit_Framework_Test $test, \Exception $exception, $time)
-    {
-    }
-
-    /**
-     * @param \PHPUnit_Framework_Test $test
-     * @param \Exception              $exception
-     * @param float                   $time
-     */
-    public function addRiskyTest(\PHPUnit_Framework_Test $test, \Exception $exception, $time)
-    {
-    }
-
-    /**
-     * @param \PHPUnit_Framework_Test $test
-     * @param \Exception              $exception
-     * @param float                   $time
-     */
-    public function addSkippedTest(\PHPUnit_Framework_Test $test, \Exception $exception, $time)
-    {
-    }
-
-    /**
-     * @param \PHPUnit_Framework_TestSuite $suite
-     */
-    public function startTestSuite(\PHPUnit_Framework_TestSuite $suite)
+    public function startTestSuite(TestSuite $suite)
     {
         $this->testSuitesRunning++;
     }
 
     /**
-     * @param \PHPUnit_Framework_TestSuite $suite
+     * @param TestSuite $suite
      */
-    public function endTestSuite(\PHPUnit_Framework_TestSuite $suite)
+    public function endTestSuite(TestSuite $suite)
     {
         $this->testSuitesRunning--;
 
